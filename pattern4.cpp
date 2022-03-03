@@ -14,7 +14,7 @@ int main()
 
     Number of rows : n
     number of cols in ith row: n
-    Value to be printed: 'A' + j - 1
+    Value to be printed: 'a' + j - 1
 
     */
     int i = 1, n;
