@@ -13,4 +13,10 @@ class TreeNode{
     TreeNode(T data){
         this -> data = data;
     }
+
+    //Destructor
+    ~TreeNode(){
+        for(int i = 0; i < children.size(); i++)
+            delete children[i];
+    }
 };
