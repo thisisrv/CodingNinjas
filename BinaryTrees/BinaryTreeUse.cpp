@@ -1,5 +1,6 @@
 #include<iostream>
 #include<queue>
+#include<stack>
 #include<climits>
 #include "BinaryTreeNode.h"
 
@@ -423,6 +424,218 @@ bool isBalanced(BinaryTreeNode<int> *root) {
     return p.second;
 }
 
+
+void levelOrderTraversal(BinaryTreeNode<int> *root) {
+    // Write your code here
+    
+    //check base case
+    if(root == NULL)
+        return;
+    
+    //create a queue
+    queue<BinaryTreeNode<int>* > q ;
+    
+    //Push root node
+    q.push(root);
+    q.push(NULL);
+    
+    //Loop
+    while(q.size() != 0){
+        
+        //Front and pop
+        BinaryTreeNode<int>* front = q.front();
+        
+        //pop
+        q.pop();
+        
+        //check if front is NULL
+        if(front == NULL){
+            //check if queue is not empty
+            if(q.size() != 0){
+                cout << endl;
+                q.push(NULL);
+            }
+        }
+        
+        //Front is not NULL
+        else{
+            //Add children to queue
+            cout << front -> data << " ";
+            
+            if(front -> left != NULL)
+                q.push(front -> left);
+            
+            if(front -> right != NULL)
+                q.push(front -> right);
+        }
+	}
+}
+
+BinaryTreeNode<int>* removeLeafNodes(BinaryTreeNode<int> *root) {
+    // Write your code here
+    //Base case
+    if(root == NULL)
+        return root;
+
+    //small calc
+    if(root -> left == NULL && root -> right == NULL)
+        return NULL;
+    
+    //Rec call
+    if(root -> left != NULL)
+        root -> left = removeLeafNodes(root -> left);
+    
+    if(root -> right != NULL)
+        root -> right = removeLeafNodes(root -> right);
+
+    return root;
+}
+
+
+template <typename T>
+class Node {
+   public:
+    T data;
+    Node<T> *next;
+    Node(T data) {
+        this->data = data;
+        this->next = NULL;
+    }
+};
+vector<Node<int>*> constructLinkedListForEachLevel(BinaryTreeNode<int> *root) {
+    // Write your code here
+            
+    //vector to store LL heads;
+    vector<Node<int>*> v;
+    if(root == NULL)
+        return v;
+    // Write your code here
+    Node<int>* head = NULL;
+    Node<int>*tail = NULL;
+    
+    //make queue
+    queue<BinaryTreeNode<int>*> pendingNodes;
+    
+    
+    
+    //Push root and NULL in queueu
+    pendingNodes.push(root);
+    pendingNodes.push(NULL);
+    
+    //Loop
+    while(pendingNodes.size() != 0){
+        //Front and pop
+        BinaryTreeNode<int>* front = pendingNodes.front();
+        pendingNodes.pop();
+        
+        //if front is NULL
+        if(front == NULL){
+            
+            //add head to vector
+            v.push_back(head);
+            
+            //reset head and tail
+            head = tail = NULL;
+            
+            //Push NULL if queue is not empty
+            if(pendingNodes.size() != 0)
+                pendingNodes.push(NULL);
+        }
+        
+        //if front != NULL
+        else{
+            
+            //create node of front -> data
+            Node<int>* newnode = new Node<int>(front -> data);
+            
+            //check if head == NULL then attach both head and tail to node
+            if(head == NULL){
+                head = tail = newnode;
+            }
+            
+            else{
+                //add newnode in tail -> next and increment tail
+                tail -> next = newnode;
+                tail = newnode;
+            }
+            
+            //Insert children if front in queue
+            if(front -> left != NULL)
+                pendingNodes.push(front -> left);
+            
+            if(front -> right != NULL)
+                pendingNodes.push(front -> right);
+        }
+    }
+    
+    return v;
+
+}
+
+void zigZagOrder(BinaryTreeNode<int> *root) {
+    // Write your code here
+    //Base case
+    if(root == NULL)
+        return;
+    
+    //stacks
+    stack<BinaryTreeNode<int>*> s1;
+    stack<BinaryTreeNode<int>*> s2;
+    
+    //Push root to s1
+    s1.push(root);
+    
+    //loop
+    while(s1.size() != 0 || s2.size() != 0){
+        
+        //Loop for s1
+        while(s1.size() != 0){
+            
+            BinaryTreeNode<int>* top = s1.top();
+            
+            s1.pop();
+            
+            //display top
+            cout << top -> data << " ";
+            
+            //Add children to s2 L R
+            
+            if(top -> left)
+                s2.push(top -> left);
+            
+            if(top -> right)
+                s2.push(top -> right);
+            
+        }
+        
+        cout << endl;
+        
+        //Loop for s2
+        while(s2.size() != 0){
+            
+            BinaryTreeNode<int>* top = s2.top();
+            
+            s2.pop();
+            
+            //display top
+            cout << top -> data << " ";
+            
+            //Add children to s1 R L
+            
+            if(top -> right)
+                s1.push(top -> right);
+            
+            if(top -> left)
+                s1.push(top -> left);
+            
+        }
+        
+        cout << endl;
+        
+        
+    }
+
+}
 //*******************************************************
 // 1 2 3 4 5 6 7 -1 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1
 //
@@ -465,7 +678,13 @@ int main(){
     // cout << "Min: " << p.first << endl;
     // cout << "Max: " << p.second << endl;
 
-    cout << isBalanced(root) << endl;
+    // cout << isBalanced(root) << endl;
+    // printLevelWise(root);
+
+    // root = removeLeafNodes(root);
+    // levelOrderTraversal(root);
+
+    zigZagOrder(root);
     //delete tree   
     delete root;
     
