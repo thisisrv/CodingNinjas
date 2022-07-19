@@ -1,7 +1,8 @@
 #include<iostream>
 #include<queue>
+#include<vector>
 // #include<stack>
-// #include<climits>
+#include<climits>
 #include "BinaryTreeNode.h"
 
 using namespace std;
@@ -177,9 +178,93 @@ void elementsInRangeK1K2(BinaryTreeNode<int>* root, int k1, int k2) {
         elementsInRangeK1K2(root -> right, k1, k2);
 }
 
+
+bool isBSTHelper(BinaryTreeNode<int> *root, int minimum, int maximum){
+    //Base case
+    if(root == NULL)
+        return true;
+    
+    //small calc
+    if(root -> data < minimum || root -> data > maximum)
+        return false;
+    
+    //rec call
+    bool leftans = isBSTHelper(root -> left, minimum, root -> data - 1);
+    bool rightans = isBSTHelper(root -> right, root ->data , maximum);
+
+    return leftans && rightans;
+}
+bool isBST(BinaryTreeNode<int> *root) {
+	// Write your code here
+    //helper fn
+    return isBSTHelper(root, INT_MIN, INT_MAX);
+}
+
+BinaryTreeNode<int>* constructTreeHelper(int *input, int si, int ei) {
+    //base case
+    if(si > ei)
+        return NULL;
+    
+    //Rec call and small calc
+    int mid = (si + ei) / 2;
+    BinaryTreeNode<int>* root = new BinaryTreeNode<int>(input[mid]);
+    
+    root -> left = constructTreeHelper(input, si, mid - 1);
+    root -> right = constructTreeHelper(input, mid + 1, ei);
+    
+    return root;
+}
+
+
+BinaryTreeNode<int>* constructTreeFromSortedArray(int *input, int n) {
+	// Write your code here
+    //Helper fn
+    return constructTreeHelper(input, 0, n - 1);
+}
+
+vector<int>* getRootToNodePath(BinaryTreeNode<int>* root, int data){
+
+    //Base case
+    if(root == NULL)
+        return NULL;
+    
+    if(root -> data == data){
+        //create a vector
+        vector<int>* ouptut = new vector<int>();
+        ouptut -> push_back(root -> data);
+        return ouptut;
+    }
+
+    //Rec call left tree
+    vector<int>* leftans = getRootToNodePath(root -> left, data);
+    if(leftans != NULL){
+
+        //push root data into leftans
+        leftans -> push_back(root -> data);
+        return leftans;
+    }
+
+    //Rec call right tree
+    vector<int>* rightans = getRootToNodePath(root -> right, data);
+    if(rightans != NULL){
+
+        //push root data into leftans
+        rightans -> push_back(root -> data);
+        return rightans;
+    }
+    
+    return NULL;
+}
+
+
 int main(){
 
     BinaryTreeNode<int>* root = takeInputLevelWise();
 
-    cout << searchInBST(root, 12) << endl;
+    // cout << isBST(root) << endl;
+
+    vector<int> *ans = getRootToNodePath(root, 8);
+
+    for(int i = 0; i < ans -> size(); i++)
+        cout << *(ans + i) << " ";
 }
