@@ -256,6 +256,44 @@ vector<int>* getRootToNodePath(BinaryTreeNode<int>* root, int data){
     return NULL;
 }
 
+//BST
+vector<int>* getPathBST(BinaryTreeNode<int> *root , int data) {
+	// Write your code here
+    //base case
+    if(root == NULL)
+        return NULL;
+    
+
+    if(root -> data == data){
+        //create a vector
+        vector<int>* ouptut = new vector<int>();
+        ouptut -> push_back(root -> data);
+        return ouptut;
+    }
+
+    //Rec call
+    if(data < root -> data){
+
+        vector<int>* leftans = getPathBST(root -> left, data);
+
+        if(leftans != NULL){
+            leftans -> push_back(root -> data);
+            return leftans;
+        }
+    }
+
+    if(data > root -> data){
+
+        vector<int>* rightans = getPathBST(root -> right, data);
+
+        if(rightans != NULL){
+            rightans -> push_back(root -> data);
+            return rightans;
+        }
+    }
+
+    return NULL;
+}
 
 int main(){
 
@@ -263,8 +301,13 @@ int main(){
 
     // cout << isBST(root) << endl;
 
-    vector<int> *ans = getRootToNodePath(root, 8);
+    // vector<int> *ans = getRootToNodePath(root, 8);
 
+    vector<int> *ans = getPathBST(root, 2);
     for(int i = 0; i < ans -> size(); i++)
-        cout << *(ans + i) << " ";
+        cout <<  ans -> at(i) << " ";
+
+    delete ans;
+
+    delete root;
 }
