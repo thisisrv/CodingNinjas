@@ -1,6 +1,7 @@
 #include<iostream>
 #include<queue>
 #include<vector>
+#include<algorithm>
 // #include<stack>
 #include<climits>
 #include "BinaryTreeNode.h"
@@ -295,6 +296,126 @@ vector<int>* getPathBST(BinaryTreeNode<int> *root , int data) {
     return NULL;
 }
 
+//Assignment 
+void insertDuplicateNode(BinaryTreeNode<int> *root) {
+    // Write your code here
+    //Base case
+    if(root == NULL)
+        return;
+    
+    insertDuplicateNode(root -> left);
+    insertDuplicateNode(root -> right);
+    
+    //create a new node
+    BinaryTreeNode<int>* temp = new BinaryTreeNode<int>(root -> data);
+    
+    //Small calc
+    temp -> left = root -> left;
+    
+    root -> left = temp;
+}
+
+void tree_to_array(BinaryTreeNode<int>* root, vector<int>* &array){
+    //Inorder
+    if(root == NULL)
+        return;
+    
+    //rec call and small calc
+    tree_to_array(root -> left, array);
+    array -> push_back(root -> data);
+    tree_to_array(root -> right, array);
+}
+
+void pairSum(BinaryTreeNode<int> *root, int sum) {
+    // Write your code here
+    //base case
+    if(root == NULL)
+        return;
+
+    //convert tree to array
+    vector<int> * treeData = new vector<int>();
+
+    tree_to_array(root, treeData);
+
+    //sort array
+    sort(treeData->begin(), treeData->end());
+
+    //while loop
+    int i = 0;
+    int j = treeData->size() - 1;
+
+    while(i < j){
+
+        if(treeData->at(i) + treeData -> at(j) == sum){
+            cout << treeData->at(i) << " " << treeData->at(j) << endl;  
+            i++;
+            j--;
+        }
+            
+        
+        else if(treeData->at(i) + treeData -> at(j) > sum)
+            j--;
+        
+        else
+            i++;
+    }
+    
+}
+
+int getLCA(BinaryTreeNode <int>* root , int a, int b) {
+    // Write your code here
+    // Base case
+    if(root == NULL)
+        return -1;
+
+    if(root -> data == a || root -> data == b)
+        return root -> data;
+
+    //Rec call
+    int left_ans = getLCA(root -> left, a, b);
+    int right_ans = getLCA(root -> right, a, b);
+    
+    //small calc
+    if(left_ans == -1 && right_ans == -1)
+        return -1;
+    
+    else if(left_ans != -1 && right_ans == -1)
+        return left_ans;
+    
+    else {
+
+        if(right_ans != -1 && left_ans == -1)
+            return right_ans;
+    }
+        
+
+    //if both left_ans and right_ans != -1
+    return root -> data;
+}
+
+int getLCABST(BinaryTreeNode<int>* root , int val1 , int val2){
+    // Write your code here
+
+    // Base case
+    if(root == NULL)
+        return -1;
+
+    // if(root -> data == val1 || root -> data == val2)
+    //     return root -> data;
+
+    //rec call
+    if(val1 < root -> data && val2 < root -> data){
+        return getLCABST(root -> left, val1, val2);
+    }
+
+    if(val1 > root -> data && val2 > root -> data){
+        return getLCABST(root -> right, val1, val2);
+    }
+
+    return root -> data;
+
+}
+
 int main(){
 
     BinaryTreeNode<int>* root = takeInputLevelWise();
@@ -303,11 +424,14 @@ int main(){
 
     // vector<int> *ans = getRootToNodePath(root, 8);
 
-    vector<int> *ans = getPathBST(root, 2);
-    for(int i = 0; i < ans -> size(); i++)
-        cout <<  ans -> at(i) << " ";
+    // vector<int> *ans = getPathBST(root, 2);
+    // for(int i = 0; i < ans -> size(); i++)
+    //     cout <<  ans -> at(i) << " ";
 
-    delete ans;
+    // delete ans;
 
+    // pairSum(root , 15);
+
+    cout << getLCABST(root, 8, 15);
     delete root;
 }
