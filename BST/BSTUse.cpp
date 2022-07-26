@@ -529,6 +529,39 @@ void replaceWithLargerNodesSum(BinaryTreeNode<int> *root) {
     int sum = 0;
     replaceWithLargerNodesSumHelper(root, sum);
 }
+
+void rootToLeafPathsSumToKHelper(BinaryTreeNode<int> *root, int k, vector<vector<int>>* &v){
+
+    //base case
+    if(root == NULL)
+        return;
+}
+
+
+void rootToLeafPathsSumToKHelper(BinaryTreeNode<int> *root, int k, string s){
+
+    //Base case
+    if(root == NULL)
+        return;
+    
+    //small calc
+    if(root -> data == k){
+        //add and print path only it is leaf node
+        if(root -> left == NULL && root -> right == NULL){
+            s = s + to_string(root -> data);
+            cout << s << endl;
+        }
+    }
+    //Rec calls
+    rootToLeafPathsSumToKHelper(root -> left, k - root -> data, s + to_string(root -> data));
+    rootToLeafPathsSumToKHelper(root -> right, k - root -> data, s + to_string(root -> data));
+
+} 
+void rootToLeafPathsSumToK(BinaryTreeNode<int> *root, int k) {
+    
+    rootToLeafPathsSumToKHelper(root, k, "");
+}
+
 int main(){
 
     BinaryTreeNode<int>* root = takeInputLevelWise();
@@ -549,9 +582,12 @@ int main(){
 
     // cout << largestBSTSubtree(root) << endl;
 
-    replaceWithLargerNodesSum(root);
+    // replaceWithLargerNodesSum(root);
 
-    printTree(root);
+    // printTree(root);
+    int num;
+    cin>> num;
+    rootToLeafPathsSumToK(root, num);
 
     delete root;
 }
