@@ -415,7 +415,120 @@ int getLCABST(BinaryTreeNode<int>* root , int val1 , int val2){
     return root -> data;
 
 }
+pair< pair<int,int>, pair<bool, int>> largestBSTSubtreeHelper(BinaryTreeNode<int> *root) {
+    // Write your code here
+    //Base case
+    if(root == NULL){
 
+        //use pair to set values: min, max, isBST, max height of BST
+        pair<pair<int, int>, pair<bool, int> >p;
+        //min value
+        p.first.first = INT_MAX;
+        //max value
+        p.first.second = INT_MIN;
+
+        //isBST
+        p.second.first = true;
+
+        //max height of bst
+        p.second.second = 0;
+
+        return p;
+    }
+
+
+    //rec call
+    pair<pair<int, int>, pair<bool, int>> left_ans = largestBSTSubtreeHelper(root -> left);
+    pair<pair<int, int>, pair<bool, int>> right_ans = largestBSTSubtreeHelper(root -> right);
+
+    //small calc
+    pair<pair<int, int>, pair<bool, int>> p;
+
+    //case 1: if both children are bst
+    if(left_ans.second.first == true && right_ans.second.first == true){
+
+        //check if root is bst
+        if(root -> data > left_ans.first.second && root -> data < right_ans.first.first){
+
+            //root is also a bst;
+            //min value
+            p.first.first = min(root -> data, left_ans.first.first);
+            //max value
+            p.first.second = max(root -> data, right_ans.first.second);
+
+            //isBST
+            p.second.first = true;
+
+            //max height of bst
+            p.second.second = 1 + max(left_ans.second.second, right_ans.second.second);
+        }
+
+        else{
+            
+            //root is not bst only child are
+            //min value
+            p.first.first = left_ans.first.first;
+            //max value
+            p.first.second = right_ans.first.second;
+
+            //isBST
+            p.second.first = false;
+
+            //max height of bst
+            p.second.second = max(left_ans.second.second, right_ans.second.second);
+        }
+    }
+
+    //case 2: if only 1 child is bst; && case 3: if both children are not BST;
+    else //if( (left_ans.second.first == true && right_ans.second.first == false) || (left_ans.second.first == false && right_ans.second.first == true) )
+    {
+
+            //min value
+            p.first.first = min(root -> data, min(left_ans.first.first, right_ans.first.first));
+            //max value
+            p.first.second = max(root -> data, max(left_ans.first.second, right_ans.first.second));
+
+            //isBST
+            p.second.first = false;
+
+            //max height of bst
+            p.second.second = max(left_ans.second.second, right_ans.second.second);
+    }
+
+    return p;
+
+}
+
+int largestBSTSubtree(BinaryTreeNode<int> *root) {
+    // Write your code here
+    pair<pair<int, int>, pair<bool, int> >p = largestBSTSubtreeHelper(root);
+
+    return p.second.second;
+}
+
+
+void replaceWithLargerNodesSumHelper(BinaryTreeNode<int>* root, int &sum){
+
+    //base case
+    if(root == NULL)
+        return;
+
+    //left call
+    replaceWithLargerNodesSumHelper(root -> right, sum);
+
+    sum = sum + root -> data;
+    root -> data = sum;
+
+    //right call
+    replaceWithLargerNodesSumHelper(root -> left, sum);
+
+}
+
+void replaceWithLargerNodesSum(BinaryTreeNode<int> *root) {
+    // Write your code here
+    int sum = 0;
+    replaceWithLargerNodesSumHelper(root, sum);
+}
 int main(){
 
     BinaryTreeNode<int>* root = takeInputLevelWise();
@@ -432,6 +545,13 @@ int main(){
 
     // pairSum(root , 15);
 
-    cout << getLCABST(root, 8, 15);
+    // cout << getLCABST(root, 8, 15);
+
+    // cout << largestBSTSubtree(root) << endl;
+
+    replaceWithLargerNodesSum(root);
+
+    printTree(root);
+
     delete root;
 }
