@@ -79,8 +79,16 @@ void BFS(int **edges, int n, int startingIndex, bool* isVisited){
         }
     }
 }
+bool alltrue(bool* isvisited, int n){
+    
+    for(int i = 0; i < n; i++)
+        if (isvisited[i] == false)
+            return false;
+            
+    return true;
+}
 
-void BFSStart(int **edges, int n, int sv){
+void BFSStart(int **edges, int n, int startingVertex){
     
     //make visited array
     bool* isVisited = new bool[n];
@@ -89,17 +97,18 @@ void BFSStart(int **edges, int n, int sv){
         isVisited[i] = false;
     
     //Loop
-    for(int i = sv; i < n; i++){
+    int i = startingVertex;
+    while(alltrue(isVisited, n) != true){
         
-        if(isVisited[i] == false){
-            BFS(edges, n, i, isVisited);
-        }
+        if(i == n)
+            i = 0;
+        
+        if(isVisited[i] == false)
+            BFS(edges,n, i, isVisited);
+        
+        i++;
     }
-
-
-    //Deallocate space
-    delete [] isVisited;
-} 
+}
 
 void displayGraphMatrix(int **edges, int n){
 
