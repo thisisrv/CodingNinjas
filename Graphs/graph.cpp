@@ -11,7 +11,7 @@ void printLoop(int **edges, int n){
     }
 }
 
-void printRecursive(int **edges, int n, int startingvertex, bool *isVisited){
+void printDFS(int **edges, int n, int startingvertex, bool *isVisited){
 
     //small calc
     cout << startingvertex << endl;
@@ -29,12 +29,12 @@ void printRecursive(int **edges, int n, int startingvertex, bool *isVisited){
             if(isVisited[i] == true)
                 continue;
             if(isVisited[i] == false)
-                printRecursive(edges, n, i, isVisited);
+                printDFS(edges, n, i, isVisited);
         }
     }
 }
 
-void BFS(int **edges, int n, int startingIndex, bool* isVisited){
+void printBFS(int **edges, int n, int startingIndex, bool* isVisited){
 
     //Make queue
     queue<int> pendingNodes;
@@ -88,7 +88,7 @@ bool alltrue(bool* isvisited, int n){
     return true;
 }
 
-void BFSStart(int **edges, int n, int startingVertex){
+void BFS(int **edges, int n){
     
     //make visited array
     bool* isVisited = new bool[n];
@@ -97,17 +97,42 @@ void BFSStart(int **edges, int n, int startingVertex){
         isVisited[i] = false;
     
     //Loop
-    int i = startingVertex;
+    int i = 0;
     while(alltrue(isVisited, n) != true){
         
         if(i == n)
             i = 0;
         
         if(isVisited[i] == false)
-            BFS(edges,n, i, isVisited);
+            printBFS(edges,n, i, isVisited);
         
         i++;
     }
+
+    delete[] isVisited;
+}
+void DFS(int **edges, int n){
+    
+    //make visited array
+    bool* isVisited = new bool[n];
+
+    for(int i = 0; i < n; i++)
+        isVisited[i] = false;
+    
+    //Loop
+    int i = 0;
+    while(alltrue(isVisited, n) != true){
+        
+        if(i == n)
+            i = 0;
+        
+        if(isVisited[i] == false)
+            printDFS(edges,n, i, isVisited);
+        
+        i++;
+    }
+
+    delete [] isVisited;
 }
 
 void displayGraphMatrix(int **edges, int n){
@@ -150,7 +175,8 @@ int main(){
     // // printLoop(edges, n);
     // printRecursive(edges, n, 0, isVisited);
 
-    BFSStart(edges, n, 2);
+    // BFS(edges, n);
+    DFS(edges, n);
 
     // cout << endl;
 
