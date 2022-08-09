@@ -332,8 +332,10 @@ TreeNode<int>* maxSumNode(TreeNode<int>* root) {
 
     //Rec call
     for(int i = 0; i < root -> children.size(); i++){
+
         TreeNode<int>* maxchildNode = maxSumNode(root -> children[i]);
-        int maxchildsum = root -> children[i] -> data;
+        // int maxchildsum = root -> children[i] -> data;
+        int maxchildsum = maxchildNode -> data;
 
         //Get maxchildsum for child
         for(int j = 0; j < maxchildNode -> children.size(); j++){
@@ -524,7 +526,7 @@ int main(){
     
     // cout << areIdentical(root1, root2) << endl;
 
-    TreeNode<int>* p = getSecondLargestNode(root1);
+    TreeNode<int>* p = maxSumNode(root1);
 
     cout << p -> data << endl;
 

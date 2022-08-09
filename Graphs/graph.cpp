@@ -145,6 +145,289 @@ void displayGraphMatrix(int **edges, int n){
         cout << endl;
     }
 }
+
+bool hasPathDFS(int **edges, int n, int sv, int ev, bool* isVisited){
+    //small calc
+    //mark vertex as visited
+    isVisited[sv] = true;
+
+    //Loop
+    for(int i = 0; i < n; i++){
+
+        if(i == sv)
+            continue;
+
+        if(edges[sv][i] == 1 && isVisited[i] == false){
+            //check adjacent
+            if(i == ev)
+                return true;
+
+            //call on i as sv
+            return hasPathDFS(edges, n, i, ev, isVisited);
+        }
+    }
+
+    return false;
+}
+
+bool hasPathBFS(int **edges, int n, int sv, int ev, bool* isVisited){
+
+
+    //queue
+    queue<int> pendingnodes;
+    pendingnodes.push(sv);
+    isVisited[sv] = true;
+
+    while(pendingnodes.size() != 0){
+
+        //front and pop
+        int front = pendingnodes.front();
+
+        pendingnodes.pop();
+
+        for(int i = 0; i < n; i++){
+
+            if(i == front)
+                continue;
+
+            if(edges[front][i] == 1 && isVisited[i] == false){
+
+                if(i == ev)
+                  return true;
+                
+                //push elements into queue
+                pendingnodes.push(i);
+                isVisited[i] = true;
+            }
+        }
+    }
+        return false;
+}
+bool hasPath(int **edges, int n, int v1, int v2){
+
+    //small calc
+    bool* isVisited = new bool[n];
+    
+    for(int i = 0; i < n; i++)
+        isVisited[i] = false;
+    
+    //only connected dfs
+    // return hasPathDFS(edges, n, v1, v2, isVisited);
+    return hasPathBFS(edges, n, v1, v2, isVisited);
+}
+
+vector<int>* PathDFSHelper(int **edges, int n, int sv, int ev, bool* isvisited){
+
+    //add element to vector v
+    if(sv == ev){
+        //make a vector and add sv to it
+        vector<int>* v = new vector<int>();
+        v -> push_back(sv);
+        isvisited[sv] = true;
+        return v;
+    }
+
+    isvisited[sv] = true;
+
+    //rec call and small calc
+    vector<int>* smallans = NULL;
+
+    for(int i = 0; i < n; i++){
+        if(i == sv)
+            continue;
+
+        if(edges[sv][i] == 1 && isvisited[i] == false){
+
+            smallans = PathDFSHelper(edges, n, i, ev, isvisited);
+            if(smallans == NULL)
+                return NULL;
+            
+            else{
+                //add sv into it and return
+                smallans -> push_back(sv);
+                return smallans;
+            }
+        }
+            
+    }
+
+    //small ans for vertex not found
+    return NULL;
+}
+
+vector<int>* PathDFS(int **edges, int n, int v1, int v2){
+
+    // vector<int> v;
+
+    bool *isvisited = new bool[n];
+
+    for(int i = 0; i < n ; i++)
+        isvisited[i] = false;
+
+    vector<int> *v = PathDFSHelper(edges, n, v1, v2, isvisited);
+
+    return v;
+    
+}
+
+#include<map>
+vector<int>* PathBFSHelper(int **edges, int n, int sv, int ev, bool* isvisited){
+
+    queue<int> pendingNodes;
+    pendingNodes.push(sv);
+    isvisited[sv] = true;
+
+    map<int, int> map;
+    //Loop
+    while(pendingNodes.size() != 0){
+
+        int front = pendingNodes.front();
+        pendingNodes.pop();
+
+        //add children
+        for(int i = 0; i < n; i++){
+            if(i == front)
+                continue;
+
+            if(edges[front][i] == 1 && isvisited[i] == false){
+                //push vertex into queue
+                pendingNodes.push(i);
+
+                //push into map
+                map.insert(pair<int, int>(i, front));
+
+                //mark as visited
+                isvisited[i] = true;
+            }
+        }
+    }
+
+    
+
+    if(map.find(ev) == map.end())
+        return NULL;
+    
+    vector<int> *v = new vector<int>();
+    v->push_back(map.find(ev) -> first);
+
+    //adding path to vector
+    for(auto itr = map.find(map.find(ev) -> second); itr != map.end(); ){
+        v->push_back(itr -> first);
+        itr = map.find(itr -> second);
+    }
+
+    v -> push_back(sv);
+    return v;
+
+}
+vector<int>* PathBFS(int **edges, int n, int v1, int v2){
+
+    // vector<int> v;
+
+    bool *isvisited = new bool[n];
+
+    for(int i = 0; i < n ; i++)
+        isvisited[i] = false;
+
+    vector<int> *v = PathBFSHelper(edges, n, v1, v2, isvisited);
+
+    delete [] isvisited;
+    return v;
+    
+}
+
+bool isconnected(int **edges, int n){
+    //make bool arary
+    bool* isvisited = new bool[n];
+
+    for(int i = 0; i < n; i++)
+        isvisited[i] = false;
+
+    //DFS OR BFS
+    printBFS(edges, n, 0, isvisited);
+
+    //check isvisited
+    for(int i = 0; i < n; i++){
+        if(isvisited[i] == false)
+            return false;
+    }
+
+    return true;
+}
+
+vector<int> allconnectedcomponentsBFS(int **edges, int n, int startingIndex, bool* isVisited){
+
+    //Make queue
+    queue<int> pendingNodes;
+
+    //push starting vertex
+    pendingNodes.push(startingIndex);
+
+    //update isvisited
+    isVisited[startingIndex] = true;
+
+    vector<int> v;
+    //loop
+    while(pendingNodes.size() != 0){
+
+        //front and pop
+        int front = pendingNodes.front();
+
+        pendingNodes.pop();
+
+        // cout << front << " ";
+
+        v.push_back(front);
+        
+        //add adjacent vertex to queue
+        for(int i = 0; i < n; i++){
+
+            if(i == front)
+                continue;
+            
+            if(edges[front][i] == 1){
+                //There is an edge
+                //check if already traversed
+                if(isVisited[i] == true)
+                    continue;
+                
+                if(isVisited[i] == false){
+
+                    //add vertex in queue
+                    pendingNodes.push(i);
+
+                    //mark as visited
+                    isVisited[i] = true;
+                }
+            }
+        }
+    }
+    return v;
+}
+
+vector<vector<int>> allconnectedcomponents(int **edges, int n){
+
+    //Bool array
+    bool* isvisited = new bool[n];
+
+    for(int i = 0; i < n; i++)
+        isvisited[i] = false;
+
+    vector<vector<int>> v;
+    //bfs
+    for(int i = 0; i < n; i++){
+
+        vector<int> temp;
+        if(isvisited[i] == false){
+            temp = allconnectedcomponentsBFS(edges, n, i, isvisited);
+        }
+
+        if(temp.size() != 0)
+            v.push_back(temp);
+    }
+
+    return v;
+}
 int main(){
 
     //Get input of edges and vertices
@@ -176,13 +459,34 @@ int main(){
     // printRecursive(edges, n, 0, isVisited);
 
     // BFS(edges, n);
-    DFS(edges, n);
+    // DFS(edges, n);
 
+    // int v1, v2;
+    // cin >> v1 >> v2;
+    // cout << hasPath(edges, n, v1, v2);
     // cout << endl;
 
     // for(int i = 0; i < n; i++)
     //     cout << isVisited[i] << " ";
 
+    // vector<int> *v = PathDFS(edges, n, v1, v2);
+    // vector<int> *v = PathBFS(edges, n, v1, v2);
+    
+    // for(int i = 0; i < v -> size(); i++)
+    //     cout << v -> at(i) << " ";
+    // cout << endl;
+    // cout << isconnected(edges, n) << endl;
+
+    vector<vector<int>> path = allconnectedcomponents(edges, n);
+    
+    for(int i = 0; i < path.size(); i++){
+
+        for(int j = 0; j < path[i].size(); j++)
+            cout << path[i][j] << " ";
+        
+        cout << endl;
+    }
+        
     for(int i = 0; i < n; i++)
         delete [] edges[i];
 

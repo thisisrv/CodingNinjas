@@ -636,6 +636,74 @@ void zigZagOrder(BinaryTreeNode<int> *root) {
     }
 
 }
+
+int find_depth(BinaryTreeNode<int>* root, int p, int level){
+    //base case
+    
+    if(root == NULL)
+        return -1;
+    
+    //small calc
+    if(root -> data == p)
+        return level;
+    
+    //rec call
+    int left_depth = find_depth(root -> left, p, level + 1);
+    
+    if(left_depth != -1)
+        return left_depth;
+    
+    return find_depth(root -> right, p, level + 1);
+}
+#include<climits>
+int find_parent(BinaryTreeNode<int>* root, int p, int parent){
+    
+    //base case
+    if(root == NULL)
+        return INT_MIN;
+    
+    //small calc
+    if(root -> data == p)
+        return parent;
+    
+    //rec call
+    int left_parent = find_parent(root -> left, p, root -> data);
+    if(left_parent != INT_MIN)
+        return left_parent;
+    
+    return find_parent(root -> right, p, root -> data);
+}
+
+// ####################################  TEST ############################################
+bool isCousin(BinaryTreeNode<int> *root, int p, int q) {
+    // Write your code here
+    //base case
+    if(root == NULL)
+        return false;
+    
+    int p_level = find_depth(root, p, 0);
+    int q_level = find_depth(root, q, 0);
+    
+    if(p_level == -1 && q_level == -1)
+        return false;
+    
+    //find parent of p and q;
+    if(p_level == q_level){
+        
+        //calculate parent;
+        int p_parent = find_parent(root, p, INT_MIN);
+        int q_parent = find_parent(root, q, INT_MIN);
+        
+        if(p_parent == q_parent)
+            return false;
+        
+        else
+            return true;
+    }
+    
+	return false;
+}
+
 //*******************************************************
 // 1 2 3 4 5 6 7 -1 -1 -1 -1 8 9 -1 -1 -1 -1 -1 -1
 //
@@ -684,7 +752,12 @@ int main(){
     // root = removeLeafNodes(root);
     // levelOrderTraversal(root);
 
-    zigZagOrder(root);
+    // zigZagOrder(root);
+    cout << find_depth(root, 3, 0) << endl;
+    cout << find_depth(root, 6, 0) << endl;
+
+    cout << find_parent(root, 3, INT_MIN) << endl;
+    cout << find_parent(root, 6, INT_MIN) << endl;
     //delete tree   
     delete root;
     
