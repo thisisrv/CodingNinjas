@@ -428,6 +428,116 @@ vector<vector<int>> allconnectedcomponents(int **edges, int n){
 
     return v;
 }
+
+//************************************** ASSIGNMENT GRAPHS1 **********************************
+void connectedGroupsBFS(int **edges, int n, int sv, bool *isvisited){
+
+    //queue
+    queue<int> pendingNodes;
+    pendingNodes.push(sv);
+    isvisited[sv] = true;
+
+    while (pendingNodes.size() != 0)
+    {
+        /* code */
+        //front and pop
+        int front = pendingNodes.front();
+        pendingNodes.pop();
+
+        // cout << front << endl;
+
+        for(int i = 0; i < n; i++){
+
+            if(i == front)
+                continue;
+
+            if(edges[front][i] == 1 && isvisited[i] == false){
+                pendingNodes.push(i);
+                isvisited[i] = true;
+            }
+        }
+    }
+    
+}
+int connectedGroups(int **edges, int n){
+
+    //bool array
+    bool *isvisited = new bool[n];
+
+    for(int i = 0; i < n; i++)
+        isvisited[i] = false;
+
+    int k = 0;
+
+    for(int i = 0; i < n; i++){
+
+        if(isvisited[i] == false){
+            k++;
+            connectedGroupsBFS(edges, n, i, isvisited);
+        }
+    }
+
+    return k;
+}
+
+#include<string>
+
+bool hasPathHelper(vector<vector<char>> &board, int n, int m, string s, int x, int y, int index){
+	
+    //base case
+    if(index == s.length())
+        return true;
+    
+    //index go out of scope
+    if(x < 0 || y < 0 || x >= n || y >=m)
+        return false;
+    
+    //small calc
+    if(board[x][y] == s[index]){
+        
+        //mark as visited
+        char temp = board[x][y];
+        board[x][y] = '#';
+        
+        //rec call
+        bool ans = hasPathHelper(board, n, m, s, x, y - 1, index + 1) || hasPathHelper(board, n, m, s, x + 1, y - 1, index + 1) ||
+            	   hasPathHelper(board, n, m, s, x + 1, y, index + 1) || hasPathHelper(board, n, m, s, x + 1, y + 1, index + 1) ||
+                   hasPathHelper(board, n, m, s, x, y + 1, index + 1) || hasPathHelper(board, n, m, s, x - 1, y + 1, index + 1) ||
+                   hasPathHelper(board, n, m, s, x -1, y, index + 1)  || hasPathHelper(board, n, m, s, x - 1, y - 1, index + 1);
+        
+        //mark as unvisited
+        board[x][y] = temp;
+        
+        return ans;
+    }
+    
+    // if(board[x][y] != string[index])
+    return false;
+}
+
+bool hasPath(vector<vector<char>> &board, int n, int m) {
+    // Write your code here.
+    //make string codingninja
+    string s = "CODINGNINJA";
+    
+    //loop
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){
+            
+            if(board[i][j] == s[0]){
+                
+                //rec call Helper fn
+                bool ans = hasPathHelper(board, n, m, s, i, j, 0);
+                
+                if(ans == true)
+                    return true;
+            }
+        }
+    }
+    
+    return false;
+    
+}
 int main(){
 
     //Get input of edges and vertices
@@ -477,16 +587,18 @@ int main(){
     // cout << endl;
     // cout << isconnected(edges, n) << endl;
 
-    vector<vector<int>> path = allconnectedcomponents(edges, n);
+    // vector<vector<int>> path = allconnectedcomponents(edges, n);
     
-    for(int i = 0; i < path.size(); i++){
+    cout << connectedGroups(edges, n) << endl;
+    // for(int i = 0; i < path.size(); i++){
 
-        for(int j = 0; j < path[i].size(); j++)
-            cout << path[i][j] << " ";
+    //     for(int j = 0; j < path[i].size(); j++)
+    //         cout << path[i][j] << " ";
         
-        cout << endl;
-    }
-        
+    //     cout << endl;
+    // }
+
+
     for(int i = 0; i < n; i++)
         delete [] edges[i];
 
