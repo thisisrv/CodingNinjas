@@ -538,6 +538,38 @@ bool hasPath(vector<vector<char>> &board, int n, int m) {
     return false;
     
 }
+
+int threeCycle(int **edges, int n){
+
+    //initialise count
+    int count = 0;
+
+    //Loop for finding 3 cycle
+    for(int i = 0; i < n; i++){
+
+        for(int j = 0; j < n; j++){
+            
+            if(i == j)
+                continue;
+            if(edges[i][j] == 1){
+
+                //for loop
+                for(int k = 0; k < n; k++){
+
+                    if(k == i || k == j)
+                        continue;
+
+                    if(edges[j][k] == 1 && edges[i][k] == 1){
+                        //check if there is an edge from i to k also
+                        count ++;
+                    }
+                }
+            }
+        }
+    }
+
+    return count/6;
+}
 int main(){
 
     //Get input of edges and vertices
@@ -589,7 +621,7 @@ int main(){
 
     // vector<vector<int>> path = allconnectedcomponents(edges, n);
     
-    cout << connectedGroups(edges, n) << endl;
+    // cout << connectedGroups(edges, n) << endl;
     // for(int i = 0; i < path.size(); i++){
 
     //     for(int j = 0; j < path[i].size(); j++)
@@ -598,7 +630,7 @@ int main(){
     //     cout << endl;
     // }
 
-
+    cout << threeCycle(edges, n) << endl;
     for(int i = 0; i < n; i++)
         delete [] edges[i];
 
