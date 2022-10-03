@@ -57,6 +57,40 @@ class Trie{
         return ans;
     }
 
+    void removeWordHelper(TrieNode* root, string word){
+        //base case
+        if(word.size() == 0){
+            
+            root -> isTerminal = false;
+            return;
+        }
+        
+        //small calc
+        int index = word[0] - 'a';
+        if(root -> children[index] == NULL)
+            return;
+            
+        //else
+        //rec call
+        TrieNode* child = root -> children[index];
+        removeWordHelper(child, word.substr(1));
+    
+        //remove child if child is useless
+        if(child -> isTerminal == false){
+            
+            //check if it has children
+            for(int i = 0; i < 26; i++){
+                if(child -> children[i] != NULL)
+                    return;
+            }
+            
+            //Child has no children 
+            delete child;
+            root -> children[index] = NULL;
+        }
+        
+    }
+
     public:
 
     //constructor
@@ -79,6 +113,10 @@ class Trie{
     bool search(string word){
         return searchHelper(root, word);
     }
+
+    void removeWord(string word){
+        removeWordHelper(root, word);
+    }    
  
 };
 
@@ -87,6 +125,8 @@ int main(){
 
     t.insertWord("ancd");
     t.insertWord("a");
-    cout << t.search("a");
+    cout << t.search("ancd");
+    t.removeWord("ancd");
+    cout << t.search("ancd");
 
 }
