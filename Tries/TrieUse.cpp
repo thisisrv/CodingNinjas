@@ -1,5 +1,6 @@
 #include "TrieNode.h"
 #include<string>
+#include<vector>
 #include<iostream>
 using namespace std;
 
@@ -117,16 +118,61 @@ class Trie{
     void removeWord(string word){
         removeWordHelper(root, word);
     }    
- 
+    
+    bool patternMatching(vector<string> vect, string pattern) {
+        // Write your code here
+        //calculate all the suffix of strings
+        
+        //loop for whole vect vector
+        for(int k = 0; k < vect.size(); k++){
+            string s = vect[k];
+            
+            for(int i = 0; i < s.length(); i++){
+                string temp = "";
+                for(int j = i; j < s.length(); j++){
+                    temp += s[j];;
+            }
+            
+            //insert into trie
+            insertWord(temp);
+            }
+        }
+        
+        return patternMatchingHelper(root, pattern);
+    }
+
+    bool patternMatchingHelper(TrieNode* root, string pattern){
+
+        //base case
+        if(pattern.size() == 0){
+            return true;
+        }
+
+        //small calc
+        int index = pattern[0] - 'a';
+
+        //check if pattern first character is present or not
+        if(root -> children[index] == NULL)
+            return false;
+
+        //rec call
+        return patternMatchingHelper(root ->  children[index], pattern.substr(1));
+    }
 };
 
 int main(){
     Trie t;
 
-    t.insertWord("ancd");
-    t.insertWord("a");
-    cout << t.search("ancd");
-    t.removeWord("ancd");
-    cout << t.search("ancd");
+    // t.insertWord("ancd");
+    // t.insertWord("a");
+    // cout << t.search("ancd");
+    // t.removeWord("ancd");
+    // cout << t.search("ancd");
+    vector<string> vect;
+    vect.push_back("abc");
+    vect.push_back("def");
+    vect.push_back("ghi");
+    cout << t.patternMatching(vect, "ih");
+
 
 }
