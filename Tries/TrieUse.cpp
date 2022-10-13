@@ -92,6 +92,20 @@ class Trie{
         
     }
 
+    void displayHelper(TrieNode* root, string output){
+
+        //small calc
+        if(root -> isTerminal == true){
+            // output += root -> data; 
+            cout << output << endl;
+        }
+
+        //rec call
+        for(int i = 0; i < 26; i++){
+            if(root -> children[i] != NULL)
+                displayHelper(root -> children[i], output + root -> children[i] -> data);
+        }
+    }
     public:
 
     //constructor
@@ -158,6 +172,10 @@ class Trie{
         //rec call
         return patternMatchingHelper(root ->  children[index], pattern.substr(1));
     }
+
+    void display(){
+        displayHelper(root, "");
+    }
 };
 
 int main(){
@@ -168,11 +186,14 @@ int main(){
     // cout << t.search("ancd");
     // t.removeWord("ancd");
     // cout << t.search("ancd");
-    vector<string> vect;
-    vect.push_back("abc");
-    vect.push_back("def");
-    vect.push_back("ghi");
-    cout << t.patternMatching(vect, "ih");
-
-
+    // vector<string> vect;
+    // vect.push_back("abc");
+    // vect.push_back("def");
+    // vect.push_back("ghi");
+    // cout << t.patternMatching(vect, "ih");
+    t.insertWord("no");
+    t.insertWord("not");
+    t.insertWord("note");
+    t.insertWord("notes");
+    t.display();
 }
