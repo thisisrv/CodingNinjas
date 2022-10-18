@@ -1,23 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-int stairCase(int n){
-    //rec
-    //base case
-    if(n == 1 || n == 0)
-        return 1;
-
-    if(n < 0) 
-        return 0;
-
-    int x = stairCase(n - 1);
-    int y = stairCase(n - 2);
-    int z = stairCase(n - 3);
-    
-    return x + y + z;
-}
-
-int stairCaseDPHelper(int n, int *ans){
+long long stairCaseDPHelper(int n, long long *ans){
     //base case
     if(n == 1 || n == 0)
         return 1;
@@ -30,22 +14,22 @@ int stairCaseDPHelper(int n, int *ans){
         return ans[n];
 
     //rec call
-    int x = stairCaseDPHelper(n - 1, ans);
-    int y = stairCaseDPHelper(n - 2, ans);
-    int z = stairCaseDPHelper(n - 3, ans);
+    long long x = stairCaseDPHelper(n - 1, ans);
+    long long y = stairCaseDPHelper(n - 2, ans);
+    long long z = stairCaseDPHelper(n - 3, ans);
     
-    ans[n] = x + y + z;
-    return ans[n];
+    return ans[n] = (x + y + z)%(1000000000 + 7);
 }
 
-int stairCaseDP(int n){
-    int *ans = new int[n + 1];
+long long stairCaseDP(int n){
+    long long *ans = new long long[n + 1];
 
     for(int i = 0; i <= n; i++)
         ans[i] = -1;
 
     return stairCaseDPHelper(n, ans);
 }
+
 int main(){
     
     // write your code here
